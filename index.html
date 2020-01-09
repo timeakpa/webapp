@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Parse JSON objects</title>
+</head>
+
+<style>
+    .example_f {
+        border-radius: 4px;
+        background: linear-gradient(to right, #67b26b, #4ca2cb) !important;
+        border: none;
+        color: #FFFFFF;
+        text-align: center;
+        text-transform: uppercase;
+        font-size: 22px;
+        padding: 20px;
+        width: 200px;
+        transition: all 0.4s;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .example_f span {
+        cursor: pointer;
+        display: inline-block;
+        position: relative;
+        transition: 0.4s;
+    }
+
+    .example_f span:after {
+        content: '\00bb';
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+    }
+
+    .example_f:hover span {
+        padding-right: 25px;
+    }
+
+    .example_f:hover span:after {
+        opacity: 1;
+        right: 0;
+    }
+    ::placeholder{
+        color: white;
+        opacity: 0.6;
+    }
+</style>
+
+<body background="1.jpg">
+    <div>
+        <div class="button_cont" style="margin:60px;">
+            <a class="example_f" onclick="postFunction()" target="_blank" rel="nofollow">
+                <span>Posts</span>
+            </a>
+        </div>
+
+        <input style="
+        width: 20%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        margin-left: 65px;
+        margin-right: 200px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;" 
+        id="postIdInput"
+        placeholder="postId"><br>
+        <ul style="color:rgb(60, 255, 0); margin-left: 45px;" id="post"></ul>
+
+        <div class="button_cont" style="margin:60px;">
+            <a class="example_f" onclick="commentFunction()" target="_blank" rel="nofollow">
+                <span>Comments</span>
+            </a>
+        </div>
+
+        <input style="
+        width: 20%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        margin-left: 65px;
+        margin-right: 200px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;" 
+        id="commentIdInput"
+        placeholder="commentId"><br>
+        <ul style="color:rgb(60, 255, 0); margin-left: 45px;" id="comment"></ul>
+
+        <div class="button_cont" style="margin:60px;">
+            <a class="example_f" onclick="profileFunction()" target="_blank" rel="nofollow">
+                <span>Profiles</span>
+            </a>
+        </div>
+
+        <ul style="color:rgb(60, 255, 0); margin-left: 45px;" id="profile"></ul>
+
+    </div>
+    <script>
+        function postFunction() {
+            var xmlhttp = new XMLHttpRequest();
+            var parameter = document.getElementById('postIdInput').value;
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let myArr = JSON.parse(this.responseText);
+                    let output = '';
+                    if (parameter.length == "") {
+                        for (var i = 0; i < myArr.length; i++) {
+                            output += '<li>' + 'postId: ' + myArr[i].id + '<br>' + ' title: ' + myArr[i].title + '<br>' + ' author: ' + myArr[i].author; '</li>'
+                        }
+                    } else {
+                        parameter -= 1;
+                        output += '<li>' + 'postId: ' + myArr[parameter].id + '<br>' + ' title: ' + myArr[parameter].title + '<br>' + ' author: ' + myArr[parameter].author; '</li>'
+                    }
+                    document.getElementById('post').innerHTML = output;
+                }
+            };
+            xmlhttp.open("GET", "http://35.204.39.30:3000/posts", true);
+            xmlhttp.send();
+        }
+
+        function commentFunction() {
+            var xmlhttp = new XMLHttpRequest();
+            var parameter = document.getElementById('commentIdInput').value;
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    let myArr = JSON.parse(this.responseText);
+                    let output = '';
+                    if (parameter.length == "") {
+                        for (var i = 0; i < myArr.length; i++) {
+                            output += '<li>' + 'commentId: ' + myArr[i].id + '<br>' + ' body: ' + myArr[i].body + '<br>' + ' postId: ' + myArr[i].postId; '</li>'
+                        }
+                    } else {
+                        parameter -= 1;
+                        output += '<li>' + 'commentId: ' + myArr[parameter].id + '<br>' + ' body: ' + myArr[parameter].body + '<br>' + ' postId: ' + myArr[parameter].postId; '</li>'
+                    }
+                    document.getElementById('comment').innerHTML = output;
+                }
+            };
+            xmlhttp.open("GET", "http://35.204.39.30:3000/comments", true);
+            xmlhttp.send();
+        }
+
+        function profileFunction() {
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var myObj = JSON.parse(this.responseText);
+                    document.getElementById("profile").innerHTML = '<li>' + 'name: ' + myObj.name; '</li>'
+
+                }
+            };
+            xmlhttp.open("GET", "http://35.204.39.30:3000/profile", true);
+            xmlhttp.send();
+        }
+    </script>
+</body>
+
+</html>
